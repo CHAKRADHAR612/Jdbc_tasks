@@ -1,5 +1,7 @@
 package com.sonata.jobtrack.dao;
 
+import java.io.FileNotFoundException;
+import java.sql.SQLException;
 import java.util.List;
 
 import com.sonata.jobtrack.model.Task;
@@ -16,4 +18,10 @@ public interface JobTracker {
 	public int updateTaskNotes(int taskId,String notes);
 	public int updateTaskBookmark(int taskId,boolean isBookmarked);
 	public int assignTaskUser(int taskId,int ownerId);
+	public int callableDemo() throws SQLException;
+	public void transactionDemo() throws SQLException;
+	public boolean verifyUser(int userId,String password) throws SQLException;
+	public int imageDemo(String path) throws SQLException, FileNotFoundException;
+	public int[] batchDemo() throws SQLException;
+	public void resultSetDemo() throws SQLException;
 }

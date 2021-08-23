@@ -1,10 +1,15 @@
 package com.sonata.jobtrack.dao.impl;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,19 +54,20 @@ public class JobTrackerImpl implements JobTracker {
 	public boolean addUser(User user) {
 		boolean added=false;
 		Connection con=new MyConnectionImpl().connectToMySql();
-		String sql="INSERT INTO User(userId,userName,email,firstname,lastname,contactno,role,isActive,dob,createdOn) VALUES(?,?,?,?,?,?,?,?,?,?)";
+		String sql="INSERT INTO User(userId,userName,password,email,firstname,lastname,contactno,role,isActive,dob,createdOn) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
 		try {
 			PreparedStatement pstatement=con.prepareStatement(sql);
 			pstatement.setInt(1,user.getUserId());
 			pstatement.setString(2, user.getUserName());
-			pstatement.setString(3,user.getEmail());
-			pstatement.setString(4,user.getFirstName());
-			pstatement.setString(5,user.getLastName());
-			pstatement.setString(6,user.getContactNumber());
-			pstatement.setString(7,user.getRole());
-			pstatement.setBoolean(8,user.getIsActive());
-			pstatement.setDate(9, (Date) user.getDob());
-			pstatement.setDate(10, (Date) user.getCreatedOn());
+			pstatement.setString(3, user.getPassword());
+			pstatement.setString(4,user.getEmail());
+			pstatement.setString(5,user.getFirstName());
+			pstatement.setString(6,user.getLastName());
+			pstatement.setString(7,user.getContactNumber());
+			pstatement.setString(8,user.getRole());
+			pstatement.setBoolean(9,user.getIsActive());
+			pstatement.setDate(10, (Date) user.getDob());
+			pstatement.setDate(11, (Date) user.getCreatedOn());
 			int r=pstatement.executeUpdate();
 			pstatement.close();
 			con.close();
@@ -244,6 +250,88 @@ public class JobTrackerImpl implements JobTracker {
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+	@Override
+	public int callableDemo() throws SQLException {
+		Connection con=new MyConnectionImpl().connectToMySql();
+			CallableStatement cs=con.prepareCall("{call get_merit_student()}");
+			ResultSet rs=cs.executeQuery();
+			int count=0;
+			while(rs.next()) {
+				System.out.println(rs.getInt("stud_id"));
+				count++;
+			}
+			return count;
+	}
+
+	@Override
+	public void transactionDemo() throws SQLException {
+		Connection con=new MyConnectionImpl().connectToMySql();
+		con.setAutoCommit(false);
+			con.commit();
+			con.close();			
+	}
+
+	@Override
+	public boolean verifyUser(int userId, String password) throws SQLException {
+		Connection con=new MyConnectionImpl().connectToMySql();
+		PreparedStatement ps=con.prepareStatement("SELECT userId,password FROM user WHERE userId=? AND password=?");
+		ps.setInt(1, userId);
+		ps.setString(2, password);
+		ResultSet rs=ps.executeQuery();
+		if(rs.next()==true) {
+			return true;
+		}else
+			return false;
+	}
+
+	@Override
+	public int imageDemo(String path) throws SQLException{
+		Connection con=new MyConnectionImpl().connectToMySql();
+		PreparedStatement ps=con.prepareStatement("INSERT INTO image VALUES(?)");
+		try {
+			FileInputStream fin=new FileInputStream(path);
+			ps.setBinaryStream(1,fin,fin.available());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		int result=ps.executeUpdate();
+		return result;
+	}
+
+	@Override
+	public int[] batchDemo() throws SQLException {
+		Connection con=new MyConnectionImpl().connectToMySql();
+		String sql1="INSERT INTO task(taskId,ownerId,name) VALUES(5,2,'JDBC1')";
+		String sql2="INSERT INTO task(taskId,ownerId,name) VALUES(6,3,'JDBC2')";
+		String sql3="INSERT INTO task(taskId,ownerId,name) VALUES(7,4,'JDBC3')";
+		String sql4="INSERT INTO task(taskId,ownerId,name) VALUES(8,5,'JDBC4')";
+		String sql5="INSERT INTO task(taskId,ownerId,name) VALUES(9,6,'JDBC5')";
+		PreparedStatement ps=con.prepareStatement(sql1);
+		ps.addBatch(sql2);
+		ps.addBatch(sql3);
+		ps.addBatch(sql4);
+		ps.addBatch(sql5);
+		int[] result=ps.executeBatch();
+		ps.close();
+		con.close();
+		return result;
+	}
+
+	@Override
+	public void resultSetDemo() throws SQLException {
+		Connection con=new MyConnectionImpl().connectToMySql();
+		Statement stmt=con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_READ_ONLY);
+		String sql="SELECT * FROM task";
+		ResultSet rs=stmt.executeQuery(sql);
+		while(rs.next()) {			
+			System.out.println(rs.getInt("taskId")+" "+rs.getInt("ownerId")+" "+rs.getString("name"));
+		}
 	}
 
 }

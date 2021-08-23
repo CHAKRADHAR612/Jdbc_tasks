@@ -5,6 +5,7 @@ import java.sql.Date;
 public class User {
 	private Integer userId;
 	private String userName;
+	private String password;
 	private String email;
 	private String firstName;
 	private String lastName;
@@ -13,12 +14,14 @@ public class User {
 	private Boolean isActive;
 	private Date dob;
 	private Date createdOn;
-	public User(){}
-	public User(Integer userId, String userName, String email, String firstName, String lastName, String contactNumber,
-			String role, Boolean isActive, Date dob, Date createdOn) {
+	
+
+	public User(Integer userId, String userName, String password, String email, String firstName, String lastName,
+			String contactNumber, String role, Boolean isActive, Date dob, Date createdOn) {
 		super();
 		this.userId = userId;
 		this.userName = userName;
+		this.password = password;
 		this.email = email;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -28,6 +31,9 @@ public class User {
 		this.dob = dob;
 		this.createdOn = createdOn;
 	}
+
+	public User(){}
+	
 	public Integer getUserId() {
 		return userId;
 	}
@@ -88,10 +94,18 @@ public class User {
 	public void setCreatedOn(Date createdOn) {
 		this.createdOn = createdOn;
 	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", userName=" + userName + ", email=" + email + ", firstName=" + firstName
-				+ ", lastName=" + lastName + ", contactNumber=" + contactNumber + ", role=" + role + ", isAlive="
-				+ isActive + ", dob=" + dob + ", createdOn=" + createdOn + "]";
+		return "User [userId=" + userId + ", userName=" + userName + ", password=" + password + ", email=" + email
+				+ ", firstName=" + firstName + ", lastName=" + lastName + ", contactNumber=" + contactNumber + ", role="
+				+ role + ", isActive=" + isActive + ", dob=" + dob + ", createdOn=" + createdOn + "]";
 	}
+
 }

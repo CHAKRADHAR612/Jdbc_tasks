@@ -1,6 +1,8 @@
 package com.sonata.jobtrack.main;
 
+import java.io.FileNotFoundException;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -21,9 +23,15 @@ public class MyJobTracker {
 //		boolean isBookmarked=false;
 //		System.out.println(jt.updateTaskBookmark(1, isBookmarked));
 		int ownerId=5;
-//		System.out.println(jt.assignTaskUser(3, ownerId));
+		System.out.println(jt.assignTaskUser(3, ownerId));
 		System.out.println(jt.assignTaskUser(4, 3));
 		List<Task> tasks=jt.getAllTasks();
+//		try {
+//			System.out.println(jt.callableDemo());
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 //		String status="In progress";
 //		List<Task> tasks=jt.getAllTasksByStatus(status);
 //		int ownerId=1;
@@ -45,6 +53,7 @@ public class MyJobTracker {
 		User user=new User();
 		user.setUserId(1);
 		user.setUserName("chakri");
+		user.setPassword("chakri123");
 		user.setEmail("chakri@xyz.com");
 		user.setFirstName("chakradhar");
 		user.setLastName("K");
@@ -54,8 +63,26 @@ public class MyJobTracker {
 		user.setDob(Date.valueOf("2000-12-06"));
 		user.setCreatedOn(Date.valueOf("2021-08-19"));
 //		System.out.println(jt.addUser(user));
-		
-		
+		try {
+			System.out.println(jt.verifyUser(1, "chakri123"));
+			System.out.println(jt.imageDemo("C:\\Users\\CHAKRADHAR_KINTADA\\Pictures\\tn1.jpg"));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+//			int[]result=jt.batchDemo();
+//			for(int i:result) {
+//				System.out.println(i);
+//			}
+			jt.resultSetDemo();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
